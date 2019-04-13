@@ -137,7 +137,7 @@ public class ProductRESTControllerTest {
         
         // Console/Log Exception:  com.devon.myretailtarget.exceptions.UpdateValidationException: 
         // hold up... IDs (13860428 <> 13860429) do NOT match
-        final String updString = "{\"id\":13860428,\"name\":\"The Big Lebowski (Blu-ray)\",\"current_price\":{\"value\":77.77,\"currency_code\":\"USD\"}}";
+        final String updString = "{\"id\":13860429,\"name\":\"The Big Lebowski (Blu-ray)\",\"current_price\":{\"value\":77.77,\"currency_code\":\"USD\"}}";
 
         URI uri = new URI(baseUrl);
      
@@ -159,8 +159,14 @@ public class ProductRESTControllerTest {
         // Check...
         assertEquals(200, updatedProd.getStatusCodeValue());
         assertNotNull(updatedProd);
-        System.out.println(updatedProd.getBody());
-        //assertNotEquals(Integer.parseInt(id), updatedProd.getBody().getId());
+        try {
+			JSONAssert.assertNotEquals(updString, updatedProd.getBody(), false);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+        assertEquals(false, updatedProd.getBody().contains(id));
+        assertEquals(true, updatedProd.getBody().contains("null"));
     }
 
     @Test
